@@ -1,0 +1,25 @@
+fork = true
+frame = "full"
+idle = true
+maximized = false
+mouse-cursor-icon = "arrow"
+no-multigrid = false
+tabs = true
+theme = "auto"
+title-hidden = false
+vsync = true
+wsl = false
+
+[font]
+normal = { family = "IosevkaTerm Nerd Font", style = "Light" }
+italic = { family = "IosevkaTerm Nerd Font", style = "Light Italic" }
+bold = { family = "IosevkaTerm Nerd Font", style = "Medium" }
+bold_italic = { family = "IosevkaTerm Nerd Font", style = "Medium Italic" }
+size = 20.0
+
+[box-drawing]
+# "font-glyph", "native" or "selected-native"
+mode = "font-glyph"
+
+[box-drawing.sizes]
+default = [2, 4]  # Thin and thick values respectively, for all sizes
