@@ -3,4 +3,7 @@ if status is-interactive
 
     # Homebrew
     eval "$(/opt/homebrew/bin/brew shellenv)"
+ 
+    # Zoxide (AKA `z`)
+    zoxide init fish | source
 end

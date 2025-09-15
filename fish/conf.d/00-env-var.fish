@@ -9,4 +9,5 @@ if status is-interactive
     set -x DOCKER_BUILDKIT 1
     set -x FZF_DEFAULT_OPTS "--prompt='> ' --pointer='>' --border=sharp --color=gutter:16,pointer:-1,fg:-1:dim,fg+:-1,bg+:-1,hl:11,hl+:11:reverse,scrollbar:0:dim:reverse --preview-window=border-sharp --scrollbar=' '"
     set -x DOTNET_ROOT "/opt/homebrew/opt/dotnet/libexec"
+    set -x FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT 1
 end
