@@ -1,6 +1,9 @@
 local wezterm = require 'wezterm'
 local config = {}
 
+-- Spawn a Nushell in login mode
+--config.default_prog = { '/opt/homebrew/bin/nu', '-l' }
+
 -- Ubesluttsom color scheme for WezTerm - matching Neovim colors exactly
 local ubesluttsom_dark = {
   -- Terminal colors (0-15) - syntax colors
@@ -107,11 +110,6 @@ config.window_padding = {
   top = '0.5cell',
   bottom = '0.5cell',
 }
--- tab bar padding:
-config.tab_bar_padding = {
-  left = '1cell',
-  right = '1cell',
-}
 
 config.enable_tab_bar = true
 config.tab_bar_at_bottom = true
@@ -156,7 +154,63 @@ config.colors.tab_bar = {
 
 config.inactive_pane_hsb = {
   saturation = 0.9,
-  brightness = 0.8,
+  brightness = 0.5,
+}
+
+-- Command Palette/Launcher styling to match theme
+config.command_palette_font = wezterm.font 'IosevkaTerm Nerd Font'
+config.command_palette_font_size = 20.0
+config.command_palette_bg_color = get_appearance():find('Dark') and '#202020' or '#e8e8e8' -- bg_subtle
+config.command_palette_fg_color = current_scheme.foreground
+
+-- Char select styling
+config.char_select_font = font_for_appearance(get_appearance())
+config.char_select_font_size = 20.0
+config.char_select_bg_color = get_appearance():find('Dark') and '#202020' or '#e8e8e8' -- bg_subtle
+config.char_select_fg_color = current_scheme.foreground
+
+-- Ergonomic pane split keybindings
+-- Smart split function - splits based on current pane dimensions
+local smart_split = wezterm.action_callback(function(window, pane)
+  local dim = pane:get_dimensions()
+  if dim.pixel_height > dim.pixel_width then
+    -- Pane is taller than wide, split vertically (new pane below)
+    window:perform_action(wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' }, pane)
+  else
+    -- Pane is wider than tall, split horizontally (new pane to the right)
+    window:perform_action(wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' }, pane)
+  end
+end)
+
+config.keys = {
+  -- Smart split (like tiling WM Super+Enter, but Ctrl+Shift+Enter)
+  { key = 'Enter', mods = 'CTRL|SHIFT', action = smart_split },
+
+  -- Manual split panes (vim/helix convention)
+  { key = 's', mods = 'CTRL|SHIFT', action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' } },   -- Split horizontally (s = split)
+  { key = 'v', mods = 'CTRL|SHIFT', action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' } }, -- Split vertically (v = vsplit)
+
+  -- Pane navigation (vim-style)
+  { key = 'h', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Left' },
+  { key = 'j', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Down' },
+  { key = 'k', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Up' },
+  { key = 'l', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Right' },
+
+  -- Pane resizing (arrow keys)
+  { key = 'LeftArrow', mods = 'CTRL|SHIFT', action = wezterm.action.AdjustPaneSize { 'Left', 5 } },
+  { key = 'RightArrow', mods = 'CTRL|SHIFT', action = wezterm.action.AdjustPaneSize { 'Right', 5 } },
+  { key = 'UpArrow', mods = 'CTRL|SHIFT', action = wezterm.action.AdjustPaneSize { 'Up', 5 } },
+  { key = 'DownArrow', mods = 'CTRL|SHIFT', action = wezterm.action.AdjustPaneSize { 'Down', 5 } },
+
+  -- Close current pane
+  { key = 'q', mods = 'CTRL|SHIFT', action = wezterm.action.CloseCurrentPane { confirm = true } },
+
+  -- Zoom/unzoom current pane (toggle fullscreen)
+  { key = 'z', mods = 'CTRL|SHIFT', action = wezterm.action.TogglePaneZoomState },
+
+  -- Rotate panes
+  { key = 'r', mods = 'CTRL|SHIFT', action = wezterm.action.RotatePanes 'Clockwise' },
+  { key = 'r', mods = 'CTRL|SHIFT|ALT', action = wezterm.action.RotatePanes 'CounterClockwise' },
 }
 
 return config
